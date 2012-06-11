@@ -6,7 +6,7 @@
 
  Meric is a fork of famous "packer" which is developed by Matthew Bruenig <matthewbruenig@gmail.com>
 
- Meric is born from the needs of the autor.
+ Meric is born from the needs of the author.
 
  Meric has a few differences from packer:
 
@@ -41,7 +41,7 @@
 
  *************************************
 
- == Translations ==
+ == TRANSLATIONS ==
  Please use the meric.lang as a template. Do not change the format. Just translate lines after "=" equal sign and do not change variables format i.e:
 
   Text to translate:
