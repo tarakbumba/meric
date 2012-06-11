@@ -352,7 +352,7 @@ confirm_edit() {
   if [[ (! -f "$2") || "$noconfirm" || "$noedit" ]]; then
     return
   fi
-  echo -en "$1"
+  echo -n "$1"
   if proceed; then
     ${EDITOR:-vi} "$2"
   fi
@@ -527,7 +527,7 @@ installhandling() {
   fi
 
   # Prompt to proceed
-  echo -en "\n$Q3 $YESNO "
+  echo -n "\n$Q3 $YESNO "
   if ! [[ $noconfirm ]]; then
     proceed || exit
   else
@@ -565,8 +565,9 @@ check_cleandeps
 proceed() {
   read -n 1
   echo
+  yesno=$(echo $YESNO | tr '[A-Z]' '[a-z]' | cut -d "/" -f1 | cut -d "[" -f2)
   case "$REPLY" in
-    'Y'|'y'|'') return 0 ;;
+    "$yesno"|'') return 0 ;;
     *)          return 1 ;;
   esac
 }
