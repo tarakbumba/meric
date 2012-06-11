@@ -10,7 +10,6 @@ USAGE="Kullanımı: meric [seçenek] [paket] [paket] [...]
 
    -S             - paket kurar
    -Syu|-Su       - tüm paketleri günceller; ayrıca -uu ve -yy seçeneklerini de alır
-   -Syua|-Sua     - tüm paketleri Aur paketleri de dahil olmak üzere günceller; ayrıca -uu ve -yy seçeneklerini de alır
    -Ss|-Ssq       - bir paketi sorgular
    -Si            - paket ile ilgili bilgileri görüntüler
    -G             - Aur üzerinden tar arşivini indirir ve açar
@@ -49,7 +48,7 @@ ERROR13="Gerekli olan dosya(lar) bulunamadı; meriç devam edemez : "
 ERROR14="'$package' paketi bulunamadı"
 
 
-YESNO="[E/h]"
+YESNO="[E/h]" #TRANSLATORS NOTE: [Y/n] stands for [Yes] and [no]. Please translate excatly as one letter.
 Q1="$install dosyası \$EDITOR yardımıyla düzenlensin mi?"
 Q2="IgnorePkg/IgnoreGroup içerisinde. Yine de kurulsun mu?"
 Q3="Kuruluma devam edilsin mi?"
@@ -110,7 +109,6 @@ USAGE="usage: meric [option] [package] [package] [...]
 
    -S             - installs package
    -Syu|-Su       - updates all packages, also takes -uu and -yy options
-   -Syua|-Sua     - updates all packages, including AUR ones; also takes -uu and -yy options
    -Ss|-Ssq       - searches for package
    -Si            - outputs info for package
    -G             - download and extract aur tarball only
@@ -147,7 +145,7 @@ ERROR12="Number \`$num' is not assigned to any of the packages."
 ERROR13="Required file(s) not found; meric can not continue : "
 ERROR14="package '$package' was not found"
 
-YESNO="[Y/n]"
+YESNO="[Y/n]" #TRANSLATORS NOTE: [Y/n] stands for [Yes] and [no]. Please translate excatly as one letter.
 Q1="Edit $install with \$EDITOR?"
 Q2="is in IgnorePkg/IgnoreGroup. Install anyway?"
 Q3="Proceed with installation?"

@@ -66,7 +66,6 @@ usage() {
 
     -S             - installs package
     -Syu|-Su       - updates all packages, also takes -uu and -yy options
-    -Syua|-Sua     - updates all packages, including AUR ones; also takes -uu and -yy options
     -Ss|-Ssq       - searches for package
     -Si            - outputs info for package
     -G             - download and extract aur tarball only
@@ -588,14 +587,7 @@ while [[ $1 ]]; do
     '-Ss') option=search ;;
     '-Ssq'|'-Sqs') option=search ; quiet='1' ;;
     '-Si') option=info ;;
-    -S*u) option=update ; pacmanarg="$1" ;;
-#     -S*uu) option=update ; pacmanarg="$1" ;;
-#     '-Sua') option=update ; pacmanarg="-Su"; auronly='1' ;;
-#     '-Syua') option=update ; pacmanarg="-Syu"; auronly='1' ;;
-#     '-Syyua') option=update ; pacmanarg="-Syyu"; auronly='1' ;;
-#     '-Syuua') option=update ; pacmanarg="-Syuu"; auronly='1' ;;
-#     '-Syyuua') option=update ; pacmanarg="-Syyuu"; auronly='1' ;;
-    '-S*u*a') option=update ; pacmanarg="-Syyuu"; auronly='1' ;;
+    -S*u*) option=update ; pacmanarg="$1" ;;
     '-G') option=download ;;
     '-h'|'--help') usage ;;
     '--quiet') quiet='1' ;;
