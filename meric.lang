@@ -1,0 +1,191 @@
+case $LANG in
+	tr* )
+###############################################################################################################
+#                                                                                                             #
+#                                        TURKISH TRANSLATION SECTION                                          #
+#                                                                                                             #
+###############################################################################################################
+
+USAGE="Kullanımı: meric [seçenek] [paket] [paket] [...]
+
+   -S             - paket kurar
+   -Syu|-Su       - tüm paketleri günceller; ayrıca -uu ve -yy seçeneklerini de alır
+   -Syua|-Sua     - tüm paketleri Aur paketleri de dahil olmak üzere günceller; ayrıca -uu ve -yy seçeneklerini de alır
+   -Ss|-Ssq       - bir paketi sorgular
+   -Si            - paket ile ilgili bilgileri görüntüler
+   -G             - Aur üzerinden tar arşivini indirir ve açar
+
+   --quiet        - aramalarda sadece paket ismini görüntüler
+   --ignore       - araları virgülle ayrılmış olarak verilen paketleri atlar
+   --noconfirm    - herhangi bir onaylama sorusu sormaz
+   --noedit       - dosyaları düzenlemeyi sormaz
+   -a|--auronly   - sadece Aur üzerinde işlemler yapar
+   --devel        - Paket yükseltme sırasında geliştirme paketlerini de günceller
+   --skipinteg    - makepkg kullanılırken md5 sağlaması yapılmaz
+   --cleandeps    - paket derleme sonunda kurulan bağımlılıkları kaldırır
+   --skip-repo    - virgülle ayrılmış olarak verilen depoları atlar
+   -h|--help      - bu yardım iletisini görüntüler
+   -v|--version   - Meriç' in kurulu sürümünü görüntüler.
+  Yukarıdaki seçenekler tüm sistem için \"/etc/meric.conf\" veya sadece kullanıcı için \"~/.config/meric/meric.conf\"
+  yapılandırma dosyasında ayarlayabilirsiniz.
+  Ayrıca, pacman ile kullanılmak üzere kişiselleştirdiğiniz bir \"~/.config/meric/pacman.conf\ dosyası oluşturabilirsiniz.
+
+"
+
+ERROR="HATA"
+ERROR1="\`$1' için  \`$dep' bağımlılığı mevcut değil."
+ERROR2="Kurulu bağımlılıklar kaldırılamadı."
+ERROR3="Dizin içinde PKGBUILD dosyası yok!"
+ERROR4="Derleme başarısız oldu!"
+ERROR5="\`$package' paketi mevcut değil."
+ERROR6="Çözümlenemeyen \`$package' bağımlılığı"
+ERROR7="Kurulum başarısız oldu."
+ERROR8="\`$package' paketinin bağımlılıkları karşılanamadı, paketleme yapılmayacak..."
+ERROR9="Meriç: \`$1' seçeneği geçerli değil."
+ERROR10="Bir paket belirtilmeli."
+ERROR11="\`$package' paketi AUR üzerinde yok."
+ERROR12="\`$num' sayısı herhangi bir paketle ilişkilendirilmemiş."
+ERROR13="Gerekli olan dosya(lar) bulunamadı; meriç devam edemez : "
+ERROR14="'$package' paketi bulunamadı"
+
+
+YESNO="[E/h]"
+Q1="$install dosyası \$EDITOR yardımıyla düzenlensin mi?"
+Q2="IgnorePkg/IgnoreGroup içerisinde. Yine de kurulsun mu?"
+Q3="Kuruluma devam edilsin mi?"
+Q4="$1 PKGBUILD dosyası \$EDITOR yardımıyla düzenlensin mi?"
+
+
+INFO1="günce -- yeniden kuruluyor"
+INFO2="güncel değil olarak işaretlenmiş"
+INFO3="Aur Hedefleri"
+INFO4="Pacman Hedefleri"
+INFO5="bağımlılık"
+INFO6="doğrudan kurulan"
+INFO7="Aur veritabanı güncelleniyor..."
+INFO8="Tam Aur yükseltmesi başlatılıyor..."
+INFO9="paket yükseltme işlemi atlanıyor"
+INFO10=" yerel veritabanı güncel"
+INFO11="Kurulacak sayıları girin. Her sayıyı bir boşlukla ayırın."
+INFO12="Sayılar"
+
+
+PKGINFO1="Depo"
+PKGINFO2="İsim"
+PKGINFO3="Sürüm"
+PKGINFO4="URL"
+PKGINFO5="Lisanslar"
+PKGINFO6="Gruplar"
+PKGINFO7="Sağladıkları"
+PKGINFO8="Bağımlılıkları"
+PKGINFO9="Derleme Bağımlılıkları"
+PKGINFO10="Seçimlik Bağımlılık(lar)"
+PKGINFO11="Çakıştığı Paket(ler)"
+PKGINFO12="Değiştirdiği Paket(ler)"
+PKGINFO13="Mimari"
+PKGINFO14="Açıklama"
+
+
+NONE="Yok"
+ROOT="kök"
+WARNING="UYARI : "
+CUSTOMIZEPKG="customizepkg yönergeleri uygulanıyor ..."
+OR="veya"
+
+######################################################### END OF TURKISH TRANSLATION #########################################################
+;;
+
+
+#####################################      #############################################################     #############################################################
+#                                   #      #                                                           #     #                                                           #
+#      NO TRANSLATION SECTION       #      #    DO NOT TRANSLATE OR REMOVE BELOW! IT IS IMPORTANTI!!!  #     #           ADD YOUR NEW TRANSLATIONS ABOVE                 #
+#                                   #      #                                                           #     #                                                           #
+#####################################      #############################################################     #############################################################
+
+
+
+	* )
+
+USAGE="usage: meric [option] [package] [package] [...]
+
+   -S             - installs package
+   -Syu|-Su       - updates all packages, also takes -uu and -yy options
+   -Syua|-Sua     - updates all packages, including AUR ones; also takes -uu and -yy options
+   -Ss|-Ssq       - searches for package
+   -Si            - outputs info for package
+   -G             - download and extract aur tarball only
+
+   --quiet        - only output package name for searches
+   --ignore       - takes a comma-separated list of packages to ignore
+   --noconfirm    - do not prompt for any confirmation
+   --noedit       - do not prompt to edit files
+   -a|--auronly   - only do actions for aur
+   --devel        - update devel packages during -Su
+   --skipinteg    - when using makepkg, do not check md5s
+   --cleandeps    - clean dependencies after package building process
+   --skip-repo    - takes a comma-separated list of repos to skip
+   -h|--help      - outputs this message
+   -v|--version   - displays installed meric version
+  You can specify some of those options in a either systemwide \"/etc/meric.conf\" or userwide \"~/.config/meric/meric.conf\" file
+  Also you can specify an alternative pacman.conf file as \"~/.config/meric/pacman.conf\
+
+"
+
+ERROR="ERROR"
+ERROR1="Dependency \`$dep' of \`$1' does not exist."
+ERROR2="Failed to remove installed dependencies."
+ERROR3="No PKGBUILD found in directory."
+ERROR4="The build failed!"
+ERROR5="Package \`$package' does not exist."
+ERROR6="Unresolved dependency \`$package'"
+ERROR7="Installation failed."
+ERROR8="Dependencies for \`$package' are not met, not building..."
+ERROR9="meric-mod: Option \`$1' is not valid."
+ERROR10="Must specify a package."
+ERROR11="Package \`$package' does not exist on aur."
+ERROR12="Number \`$num' is not assigned to any of the packages."
+ERROR13="Required file(s) not found; meric can not continue : "
+ERROR14="package '$package' was not found"
+
+YESNO="[Y/n]"
+Q1="Edit $install with \$EDITOR?"
+Q2="is in IgnorePkg/IgnoreGroup. Install anyway?"
+Q3="Proceed with installation?"
+Q4="Edit $1 PKGBUILD with \$EDITOR?"
+
+INFO1="is up to date -- reinstalling"
+INFO2="is flagged out of date"
+INFO3="Aur Targets"
+INFO4="Pacman Targets"
+INFO5="dependency"
+INFO6="explicit"
+INFO7="Synchronizing aur database..."
+INFO8="Starting full aur upgrade..."
+INFO9="ignoring package upgrade"
+INFO10=" local database is up to date"
+INFO11="Type numbers to install. Separate each number with a space."
+INFO12="Numbers"
+
+PKGINFO1="Repository"
+PKGINFO2="Name"
+PKGINFO3="Version"
+PKGINFO4="URL"
+PKGINFO5="Licenses"
+PKGINFO6="Groups"
+PKGINFO7="Provides"
+PKGINFO8="Depends On"
+PKGINFO9="Make Depends"
+PKGINFO10="Optional Deps"
+PKGINFO11="Conflicts With"
+PKGINFO12="Replaces"
+PKGINFO13="Architecture"
+PKGINFO14="Description"
+
+NONE="None"
+ROOT="root"
+WARNING="WARNING : "
+CUSTOMIZEPKG="Applying customizepkg instructions..."
+OR="or"
+############################################################## END OF TRANSLATION ###########################################################################################
+;;
+esac
