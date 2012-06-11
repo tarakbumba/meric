@@ -1,0 +1,56 @@
+ Meric README FILE
+************************
+== About and Features ==
+
+ Meric is a package helper for Arch Linux. It can retrieve packages from official repositories and Arch User Repository (a.k.a. AUR).
+
+ Meric is a fork of famous "packer" which is developed by Matthew Bruenig <matthewbruenig@gmail.com>
+
+ Meric is born from the needs of the author.
+
+ Meric has a few differences from packer:
+
+  1- Meric has a config file. Users may use it for daily meric tasks instead of using options in commandline. Also makepkg options can be set there.
+ Once options have been set; meric can call makepkg with these options by default.
+
+ 2- Meric has the ability of remove installed dependencies after package creation. Like "makepkg -r".
+   Not perfect but it works for my needs.
+
+ 3- Meric can skip checking and installing from specified repositories with "--skip-repo" option. This is useful when you setup your custom repository
+
+ with AUR packages. Aur helpers, including packer, won't treat those packages as aur packages because it thouhgt that they came from a repo (your custom repo)
+ So those packages always skipped when AUR updates checking phase. This option prevents this for you.( also can be set in meric.conf to make it default behaviour)
+
+ 4- Meric can use translations. For the sake of keep package and its dependencies minimal; only one text file (in bash script format) is used to hold and provide
+ all translations. See TRANSLATIONS section.
+
+ 5- Meric can call pacman with a custom pacman.conf file for all pacman related operations. Just place your custom pacman.conf under $HOME/.config/meric/ directory.
+
+ For detailed options information type "meric --help" (without quotes) on commandline.
+
+ == Installation ==
+
+ * Use provided PKGBUILD from AUR to create a Meric package
+  or
+ * Use below commands as root in Meric directory for manual installation (you must manually remove those if you want to remove Meric):
+
+  # cp meric /usr/bin/
+  # mkdir /usr/share/meric && cp {meric.lang,COPYING,README,ChangeLog} /usr/share/meric/
+  # cp meric.conf /etc/
+
+
+ *************************************
+
+ == TRANSLATIONS ==
+ Please use the meric.lang as a template. Do not change the format. Just translate lines after "=" equal sign and do not change variables format i.e:
+
+  Text to translate:
+   ERROR11="Package \`$package' does not exist on aur."
+
+  Translated text:
+   ERROR11="\`$package' paketi AUR üzerinde yok."
+
+ Send your translations (including your names and e-mails) to my e-mail adress shown below.
+
+
+ Atilla ÖNTAŞ <tarakbumba@gmail.com>
