@@ -22,7 +22,7 @@
  So those packages always skipped when AUR updates checking phase. This option prevents this for you.( also can be set in meric.conf to make it default behaviour)
 
  4- Meric can use translations. For the sake of keep package and its dependencies minimal; only one text file (in bash script format) is used to hold and provide
- all translations. See TRANSLATIONS file.
+ all translations. See TRANSLATIONS section.
 
  5- Meric can call pacman with a custom pacman.conf file for all pacman related operations. Just place your custom pacman.conf under $HOME/.config/meric/ directory.
 
