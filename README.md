@@ -149,7 +149,7 @@ settings it needs.
 
 If you want to use another pacman configuration file instead of the
 default one, you can use your own pacman.conf located in
-'$HOME/.config/meric/meric.conf'. /etc/pacman.conf will be ignored
+'$HOME/.config/meric/pacman.conf'. /etc/pacman.conf will be ignored
 in this case.
 
 If you want to edit a file, the $EDITOR environment variable is used.
