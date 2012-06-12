@@ -1,4 +1,7 @@
 # Maintainer : Atilla ÖNTAŞ <tarakbumba@gmail.com>
+# If you're using zsh shell and want to enable zsh-completion turn this setting on:
+zsh_on="n"
+
 pkgname=meric
 pkgver=20120611
 pkgrel=1
@@ -28,8 +31,13 @@ build() {
     mkdir -p "$pkgdir/usr/bin/"
     mkdir -p "$pkgdir/usr/share/meric/"
     mkdir -p "$pkgdir/etc/"
+    mkdir -p "$pkgdir/etc/bash_completion.d"
+    if [[ $zsh_on == "y" ]]
+    mkdir -p "$pkgdir//usr/share/zsh/site-functions"
+    install -m 644 meric.zshcomp "$pkgdir/usr/share/zsh/site-functions/_meric"
     install -m 755 meric "$pkgdir/usr/bin/meric"
-    install -m 644 {meric.lang,COPYING,README,ChangeLog} "$pkgdir/usr/share/meric/"
+    install -m 644 {meric.lang,COPYING,README.md,ChangeLog} "$pkgdir/usr/share/meric/"
     install -m 644 meric.conf "$pkgdir/etc/meric.conf"
+    install -m 644 meric.bashcomp "$pkgdir/etc/bash_completion.d/meric"
 }
 

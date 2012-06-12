@@ -1,5 +1,6 @@
 #!/bin/bash
 # Based on "Packer" :  Copyright Matthew Bruenig <matthewbruenig@gmail.com>
+# Some code taken from 	DeedleFake <YissZev@BeckForce.com>
 # Copyright Atilla ÖNTAŞ <tarakbumba@gmail.com>
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,19 +28,23 @@ usermakepkgconf="$HOME/.makepkg.conf"
 userpacmanconf="$HOME/.config/meric/pacman.conf"
 syspacmanconf='/etc/pacman.conf'
 altpacmanconf="$tmpdir/tmppacman.conf"
-mericconf='/etc/meric.conf'
+# mericconf='/etc/meric.conf'
+mericconf='/home/atilla/DEPOM/GIT/meric/meric.conf'
 usermericconf="$HOME/.config/meric/meric.conf"
 mericlang='/usr/share/meric/meric.lang'
 
+
 # Global functions
 if [[ -t 1 && ! $COLOR = "NO" ]]; then
-  COLOR1='\e[1;39m'
-  COLOR2='\e[1;32m'
-  COLOR3='\e[1;35m'
-  COLOR4='\e[1;36m'
-  COLOR5='\e[1;34m'
-  COLOR6='\e[1;41m'
-  COLOR7='\e[1;31m'
+  COLOR1='\e[1;39m' #white text
+  COLOR2='\e[1;32m' #green text
+  COLOR3='\e[1;35m' #pink text
+  COLOR4='\e[1;36m' #cyan text
+  COLOR5='\e[1;34m' #dark blue text
+  COLOR6='\e[1;41m' #white text on red background
+  COLOR7='\e[1;31m' #ony red
+  COLOR8='\e[1;33m' #yellow text
+  COLOR9='\e[1;42m' #white text on green background
   ENDCOLOR='\e[0m'
   S='\\'
 fi
@@ -75,6 +80,9 @@ usage() {
     --noconfirm    - do not prompt for any confirmation
     --noedit       - do not prompt to edit files
     -a|--auronly   - only do actions for aur
+    -U             - make local PKGBUILD with AUR support (use this instead of 'makepkg' command)
+    --sign         - sign the AUR package with your gpg-key. Without this option default behaviour is NOT to SIGN packages.
+    --keeptar      - copy downloaded AUR tarball to 'SRCPKGDEST' specified in '/etc/makepkg.conf'
     --devel        - update devel packages during -Su
     --skipinteg    - when using makepkg, do not check md5s
     --cleandeps    - clean dependencies after package building process
@@ -102,11 +110,11 @@ usage() {
   ERROR13="Required file(s) not found; meric can not continue : "
   ERROR14="package '$package' was not found"
 
-  YESNO="[Y/n]"
-  Q1="Edit $install with \$EDITOR?"
+  YESNO="[Y/n]" #TRANSLATORS_NOTE: [Y/n] stands for [Yes] and [no]. Please translate excatly as same format. i.e. [E/h] in Turkish
+  Q1="should be edit with \$EDITOR?"
   Q2="is in IgnorePkg/IgnoreGroup. Install anyway?"
   Q3="Proceed with installation?"
-  Q4="Edit $1 PKGBUILD with \$EDITOR?"
+  Q4="PKGBUILD should be edit with \$EDITOR?"
 
   INFO1="is up to date -- reinstalling"
   INFO2="is flagged out of date"
@@ -120,6 +128,8 @@ usage() {
   INFO10=" local database is up to date"
   INFO11="Type numbers to install. Separate each number with a space."
   INFO12="Numbers"
+  INFO13="Please wait computing dependencies from repos and AUR ..."
+  INFO14="These packages will be installed as dependency from AUR :"
 
   PKGINFO1="Repository"
   PKGINFO2="Name"
@@ -186,6 +196,18 @@ isignored() {
   [[ " ${ignoredpackages[@]} " =~ " $1 " ]]
 }
 
+isdevel() {
+  unset _darcstrunk _cvsroot _gitroot _svntrunk _bzrtrunk _hgroot
+  . "$1"
+  if [[ "$(LC_ALL=C vercmp "$pkgver" "$ver")" -gt 0 ]]; then
+    return 0
+  elif [[ ${_darcstrunk} || ${_cvsroot} || ${_gitroot} || ${_svntrunk} || ${_bzrtrunk} || ${_hgroot} ]]; then
+    return 0
+  fi
+
+  return 1
+}
+
 # Tests whether $1 exists on the aur
 existsinaur() {
   rpcinfo "$1"
@@ -195,6 +217,12 @@ existsinaur() {
 # Tests whether $1 exists in pacman
 existsinpacman() {
   pacman $conf -Si -- "$1" &>/dev/null
+#   for arc in $(ls -1 "$dbpath/sync"); do
+#     match="$(bsdtar -tf "$dbpath/sync/$arc" | sed -n "/^\($1\(-[^-]\\)\{2\}\)\/$/{s##$dbpath/sync/$arc/\1#;p;};")"
+#     [[ "$match" ]] && return 0
+#   done
+#
+#   return 1
 }
 
 # Tests whether $1 is provided in pacman, sets globally accessibly providepkg var
@@ -210,6 +238,8 @@ existsinpacmangroup() {
 # Tests whether $1 exists locally
 existsinlocal() {
   pacman $conf -Qq -- "$1" &>/dev/null
+# [ -d "$(ls -1 "$dbpath/local" | sed -n "/^\($1\(-[^-]\+\)\{2\}\)$/{s##$dbpath/local/\1#;p;};")" ] && return 0
+#   return 1
 }
 
 # Scrapes the aur deps from PKGBUILDS and puts in globally available dependencies array
@@ -351,7 +381,7 @@ confirm_edit() {
   if [[ (! -f "$2") || "$noconfirm" || "$noedit" ]]; then
     return
   fi
-  echo -n "$1"
+  echo -en "$1"
   if proceed; then
     ${EDITOR:-vi} "$2"
   fi
@@ -389,6 +419,45 @@ check_cleandeps (){
   fi
 }
 
+# Detect --sign and --skipinteg makepkg options.
+# If they used both in commandline and meric.conf
+# use only one instance.
+signing() {
+# Package signing
+if [[ $sign -eq 1 ]]; then # test if "--sign" option used in commandline or in meric.conf
+  if [[ -n ${MAKEPKGOPTS[@]} ]]; then # test if MAKEPKGOPTS is non-empty variable if true:
+    if [[ ${MAKEPKGOPTS[@]} =~ "--sign" ]]; then #test "--sign" is in MAKEPKGOPTS and if true:
+     return #use "return" to exit function (not script!)
+    else
+     MAKEPKGOPTS+=("--sign") # if false add "--sign" in MAKEPKGOPTS
+    fi
+  else #if MAKEPKGOPTS is an empty variable:
+    MAKEPKGOPTS+=("--sign") # then add "--sign" in MAKEPKGOPTS
+  fi
+fi
+}
+md5check() {
+# Skip md5 check
+if [[ $skipinteg -eq 1 ]]; then
+  if [[ -n ${MAKEPKGOPTS[@]} ]]; then
+    if [[ ${MAKEPKGOPTS[@]} =~ "--skipinteg" ]]; then
+     return
+    else
+     MAKEPKGOPTS+=("--skipinteg")
+    fi
+  else
+    MAKEPKGOPTS+=("--skipinteg")
+  fi
+fi
+
+}
+# Detect --sign and --skipinteg makepkg options.
+# If they used both in commandline and meric.conf
+# use only one instance.
+makepkg_options() {
+  md5check
+  signing
+}
 
 # Installs packages from aur ($1 is package, $2 is dependency or explicit)
 aurinstall() {
@@ -404,6 +473,7 @@ aurinstall() {
     cd "$dir"
     curl -Lfs "$(pkglink $1)" > "$1.tar.gz"
     tar xf "$1.tar.gz"
+    [[ "$keeptar" == "1" ]] && cp "$package.tar.gz" $SRCPKGDEST
     cd "$1"
 
     # customizepkg
@@ -414,7 +484,7 @@ aurinstall() {
   fi
 
   # Allow user to edit PKGBUILD
-  confirm_edit "${COLOR6}$Q4 $YESNO${ENDCOLOR} " PKGBUILD
+  confirm_edit "${COLOR6}$1 $Q4 $YESNO${ENDCOLOR} " PKGBUILD
   if ! [[ -f PKGBUILD ]]; then
     err "$ERROR3"
   fi
@@ -422,9 +492,10 @@ aurinstall() {
   # Allow user to edit .install
   unset install
   . PKGBUILD
-  confirm_edit "${COLOR6}$Q1 $YESNO${ENDCOLOR} " "$install"
+  confirm_edit "${COLOR6}$install $Q1 $YESNO${ENDCOLOR} " "$install"
 
   # Installation (makepkg and pacman)
+  makepkg_options #stands for MAKEPKGOPTS detection
   if [[ $UID -eq 0 ]]; then
     makepkg ${MAKEPKGOPTS[@]} --asroot -f
   else
@@ -432,6 +503,7 @@ aurinstall() {
   fi
 
   [[ $? -ne 0 ]] && echo -e "${COLOR7}$ERROR :$ENDCOLOR $ERROR4" &&  return 1
+  Pacman_noconfirm #use this to add --noconfirm option
   if  [[ $2 = dependency ]]; then
     runasroot $PACMAN $conf ${PACOPTS[@]} --asdeps -U $pkgname-*$PKGEXT
   elif [[ $2 = explicit ]]; then
@@ -439,7 +511,16 @@ aurinstall() {
    fi
 }
 
+# Prompt to proceed
+install_proceed() {
 
+  echo -en "\n$Q3 $YESNO "
+  if ! [[ $noconfirm ]]; then
+    proceed || exit
+  else
+    echo
+  fi
+}
 # Goes through all of the install tests and execution ($@ is packages to be installed)
 installhandling() {
   packageargs=("$@")
@@ -525,13 +606,7 @@ installhandling() {
     echo -e "${COLOR6}$INFO4 (${#pacmandepends[@]}):${ENDCOLOR} ${pacmandepends[@]}"
   fi
 
-  # Prompt to proceed
-  echo -n "\n$Q3 $YESNO "
-  if ! [[ $noconfirm ]]; then
-    proceed || exit
-  else
-    echo
-  fi
+  install_proceed
 
   # Install pacman dependencies
   original_pkglist=($(pacman $conf -Qq)) # we will need this if dependencies will be removed when aur package built.
@@ -542,7 +617,7 @@ installhandling() {
   # Install aur dependencies
   if [[ $aurdepends ]]; then
     for dep in "${aurdepends[@]}"; do
-      aurinstall "$dep" "$INFO5"
+      aurinstall "$dep" "dependency"
     done
   fi
 current_pkglist=($(pacman $conf -Qq)) # we will need this if dependencies will be removed when aur package built.
@@ -551,7 +626,7 @@ current_pkglist=($(pacman $conf -Qq)) # we will need this if dependencies will b
   for package in "${aurtargets[@]}"; do
     scrapeaurdeps "$package"
     if pacman $conf -T "${dependencies[@]}" &>/dev/null; then
-      aurinstall "$package" "$INFO6"
+      aurinstall "$package" "explicit"
 
     else
       echo -e "${COLOR7}$ERROR :$ENDCOLOR $ERROR8"
@@ -584,19 +659,25 @@ packageargs=()
 while [[ $1 ]]; do
   case "$1" in
     '-S') option=install ;;
+    '-Sa') option=install; auronly='1' ;;
     '-Ss') option=search ;;
+    '-Ssa'|'-Sas') option=search; auronly='1' ;;
     '-Ssq'|'-Sqs') option=search ; quiet='1' ;;
+    '-Ssqa'|'-Sqsa'|'-Sasq'|'-Sqas'|'-Saqs'|'-Ssaq') option=search ; quiet='1'; auronly='1' ;;
     '-Si') option=info ;;
     -S*u*) option=update ; pacmanarg="$1" ;;
     '-G') option=download ;;
     '-h'|'--help') usage ;;
     '--quiet') quiet='1' ;;
     '--ignore') ignorearg="$2" ; PACOPTS+=("--ignore" "$2") ; shift ;;
-    '--noconfirm') noconfirm='1' PACOPTS+=("--noconfirm");;
+    '--noconfirm') noconfirm='1';;
     '--noedit') noedit='1' ;;
     '-a'|'--auronly') auronly='1' ;;
+    '-U') option=make ; shift ; MAKEPKGOPTS+=("$@") ; break ;;
+    '--keeptar') keeptar='1' ;;
+    '--sign') sign='1' ;;
     '--devel') devel='1' ;;
-    '--skipinteg') MAKEPKGOPTS+=("--skipinteg") ;;
+    '--skipinteg') skipinteg='1' ;;
     '--cleandeps'| '-c') cleandeps='1' ;;
     '--version'| '-v') echo -n "Meric - $VERSION" ;;
     '--skip-repo') skipped_repos="$2" ; skip_repo='1' ; shift ;;
@@ -626,9 +707,33 @@ else
   fi
 fi
 
+Pacman_noconfirm() {
+# Check if --noconfirm option is used
+if [[ $noconfirm -eq 1 ]]; then
+  if [[ -n ${PACOPTS[@]} ]]; then
+    if [[ ${PACOPTS[@]} =~ "--noconfirm" ]]; then
+     return
+    else
+     PACOPTS+=("--noconfirm")
+    fi
+  else
+    PACOPTS+=("--noconfirm")
+  fi
+fi
+
+}
+# #parse database
+# dbpath="$(cat $pacmanconf | sed -n '/^\s*DBPath\s*=\s*\([a-zA-Z0-9\s/\\]\+\)/{s//\1/;p;};')"
+# [[ "$dbpath" == "" ]] && dbpath='/var/lib/pacman'
+
 # Sanity checks
 [[ $option ]] || option="searchinstall"
-[[ $option != "update" && -z $packageargs ]] && err "$ERROR10"
+if [[ -z $packageargs ]]; then
+  case "$option" in
+    'update'|'make') ;;
+    *) err "$ERROR10"
+  esac
+fi
 
 # Install (-S) handling
 if [[ $option = install ]]; then
@@ -636,10 +741,37 @@ if [[ $option = install ]]; then
   exit
 fi
 
+# Make (-U) handling
+if [[ $option = make ]]; then
+  if ! [ -f PKGBUILD ]; then
+    err "PKGBUILD does not exist."
+  fi
+  echo -en "$INFO13 \n"
+  sourcemakepkgconf
+
+  source PKGBUILD
+  finddeps
+
+
+
+  for dep in "${aurdeps[@]}"; do
+    if ! existsinlocal "$dep"; then
+      echo -en "$INFO14 $COLOR9$dep$ENDCOLOR \n "
+      install_proceed
+      aurinstall "$dep" dependency
+    fi
+  done
+
+  makepkg_options && makepkg ${MAKEPKGOPTS[@]} -fsi
+
+  exit
+fi
+
 # Update (-Su) handling
 if [[ $option = update ]]; then
   getignoredpackages
   sourcemakepkgconf
+  Pacman_noconfirm
   # Pacman update
   if ! [[ $auronly ]]; then
     runasroot $PACMAN $conf "${PACOPTS[@]}" "$pacmanarg"
@@ -674,13 +806,7 @@ if [[ $option = update ]]; then
       if isignored "$pkg"; then
         continue
       fi
-      unset _darcstrunk _cvsroot _gitroot _svntrunk _bzrtrunk _hgroot
-      . "$tmpdir/$pkg.PKGBUILD"
-      if [[ "$(LC_ALL=C vercmp "$pkgver-$pkgrel" "$ver")" -gt 0 ]]; then
-        newpackages+=("$pkg")
-      elif [[ ${_darcstrunk} || ${_cvsroot} || ${_gitroot} || ${_svntrunk} || ${_bzrtrunk} || ${_hgroot} ]]; then
-        newpackages+=("$pkg")
-      fi
+    isdevel "$tmpdir/$pkg.PKGBUILD" && newpackages+=("$pkg")
     done
   else
     for ((i=0; i<$total; i++)); do
@@ -732,6 +858,7 @@ if [[ $option = download ]]; then
   for package in "${pkglist[@]}"; do
     curl -Lfs "$(pkglink $package)" > "$package.tar.gz"
     tar xf "$package.tar.gz"
+    [[ "$keeptar" == "1" ]] && sourcemakepkgconf && cp "$package.tar.gz" $SRCPKGDEST
   done
 fi
 

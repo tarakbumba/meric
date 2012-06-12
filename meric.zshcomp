@@ -1,0 +1,53 @@
+#compdef meric
+
+_meric_opts_other=(
+	'-G[Download and extract aur tarball only]'
+	'-h[Display help]'
+	'--help[Display help]'
+)
+
+_meric_opts_sync=(
+	'-S[Installs package]'
+	'-Syu[Updates all packages]'
+	'-Su[Updates all packages]'
+	'-Ss[Searches for package]'
+	'-Ssq[Searches for package]'
+	'-Si[Outputs info for package]'
+	'-Sc[Clean old packages]'
+)
+
+_meric_options=(
+	'--quiet[only output package name for searches]'
+	'--ignore[takes a comma-separated list of packages to ignore]'
+	'--noconfirm[do not prompt for any confirmation]'
+	'--noedit[do not prompt to edit files]'
+	'--auronly[only do actions for aur]'
+	'--devel[update devel packages during -Su]'
+	'--skipinteg[when using makepkg, do not check md5s]'
+	'--cleandeps[clean dependencies after package building process]'
+	'--skip-repo[takes a comma-separated list of repos to skip]'
+	'--sign[sign the AUR package with your gpg-key]'
+	'--keeptar[do not delete tarball from -G]'
+)
+
+
+_meric() {
+	case $words[2] in
+		-S*)
+			_arguments -s : \
+				"$_meric_opts_sync[@]" \
+			 	"$_meric_options[@]" \
+				;;
+		--)
+			_arguments -s : \
+			 	"$_meric_options[@]" \
+				;;
+		*)
+			_arguments -s : \
+				"$_meric_opts_sync[@]" \
+			 	"$_meric_opts_other[@]" \
+				;;
+	esac
+}
+
+_meric "$@"

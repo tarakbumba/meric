@@ -19,6 +19,9 @@ USAGE="Kullanımı: meric [seçenek] [paket] [paket] [...]
    --noconfirm    - herhangi bir onaylama sorusu sormaz
    --noedit       - dosyaları düzenlemeyi sormaz
    -a|--auronly   - sadece Aur üzerinde işlemler yapar
+   -U             - Yerel PKGBUILD dosyasını bağımlılıklarını AUR' dan kurarak derler (bu seçeneği 'makepkg' komutu yerine kullanın)
+   --sign         - AUR paketini gpg-anahtarınız ile imzalar. Bu seçenek kullanılmamışsa öntanımlı olarak paketler İMZALANMAZ.
+   --keeptar      - indirilen tar arşivini /etc/makepkg.conf dosyasında 'SRCPKGDEST' satırında yer alan dizine kopyalar
    --devel        - Paket yükseltme sırasında geliştirme paketlerini de günceller
    --skipinteg    - makepkg kullanılırken md5 sağlaması yapılmaz
    --cleandeps    - paket derleme sonunda kurulan bağımlılıkları kaldırır
@@ -49,10 +52,10 @@ ERROR14="'$package' paketi bulunamadı"
 
 
 YESNO="[E/h]" #TRANSLATORS NOTE: [Y/n] stands for [Yes] and [no]. Please translate excatly as one letter.
-Q1="$install dosyası \$EDITOR yardımıyla düzenlensin mi?"
+Q1a="dosyası \$EDITOR yardımıyla düzenlensin mi?"
 Q2="IgnorePkg/IgnoreGroup içerisinde. Yine de kurulsun mu?"
 Q3="Kuruluma devam edilsin mi?"
-Q4="$1 PKGBUILD dosyası \$EDITOR yardımıyla düzenlensin mi?"
+Q4="PKGBUILD dosyası \$EDITOR yardımıyla düzenlensin mi?"
 
 
 INFO1="günce -- yeniden kuruluyor"
@@ -67,6 +70,8 @@ INFO9="paket yükseltme işlemi atlanıyor"
 INFO10=" yerel veritabanı güncel"
 INFO11="Kurulacak sayıları girin. Her sayıyı bir boşlukla ayırın."
 INFO12="Sayılar"
+INFO13="Depolardan ve AUR'dan kurulacak bağımlılıklar hesaplanırken lütfen bekleyin ..."
+INFO14="Şu paketler bağımlılık olarak AUR üzerinden kurulacak :"
 
 
 PKGINFO1="Depo"
@@ -118,6 +123,9 @@ USAGE="usage: meric [option] [package] [package] [...]
    --noconfirm    - do not prompt for any confirmation
    --noedit       - do not prompt to edit files
    -a|--auronly   - only do actions for aur
+   -U             - make local PKGBUILD with AUR support (use this instead of 'makepkg' command
+   --sign         - sign the AUR package with your gpg-key. Without this option default behaviour is NOT to SIGN packages.
+   --keeptar      - copy downloaded tarball to a directory specified in 'SRCPKGDEST' array in '/etc/makepkg.conf'
    --devel        - update devel packages during -Su
    --skipinteg    - when using makepkg, do not check md5s
    --cleandeps    - clean dependencies after package building process
@@ -145,11 +153,12 @@ ERROR12="Number \`$num' is not assigned to any of the packages."
 ERROR13="Required file(s) not found; meric can not continue : "
 ERROR14="package '$package' was not found"
 
-YESNO="[Y/n]" #TRANSLATORS NOTE: [Y/n] stands for [Yes] and [no]. Please translate excatly as one letter.
-Q1="Edit $install with \$EDITOR?"
+YESNO="[Y/n]" #TRANSLATORS_NOTE: [Y/n] stands for [Yes] and [no]. Please translate excatly as one letter.
+Q1a="Edit"
+Q1b="with \$EDITOR?"
 Q2="is in IgnorePkg/IgnoreGroup. Install anyway?"
 Q3="Proceed with installation?"
-Q4="Edit $1 PKGBUILD with \$EDITOR?"
+Q4="PKGBUILD with \$EDITOR?"
 
 INFO1="is up to date -- reinstalling"
 INFO2="is flagged out of date"
@@ -163,6 +172,8 @@ INFO9="ignoring package upgrade"
 INFO10=" local database is up to date"
 INFO11="Type numbers to install. Separate each number with a space."
 INFO12="Numbers"
+INFO13="Please wait computing dependencies from repos and AUR ..."
+INFO14="These packages will be installed as dependency from AUR :"
 
 PKGINFO1="Repository"
 PKGINFO2="Name"
