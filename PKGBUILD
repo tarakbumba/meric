@@ -32,9 +32,10 @@ build() {
     mkdir -p "$pkgdir/usr/share/meric/"
     mkdir -p "$pkgdir/etc/"
     mkdir -p "$pkgdir/etc/bash_completion.d"
-    if [[ $zsh_on == "y" ]]
+    if [[ $zsh_on == "y" ]]; then
     mkdir -p "$pkgdir//usr/share/zsh/site-functions"
     install -m 644 meric.zshcomp "$pkgdir/usr/share/zsh/site-functions/_meric"
+    fi
     install -m 755 meric "$pkgdir/usr/bin/meric"
     install -m 644 {meric.lang,COPYING,README.md,ChangeLog} "$pkgdir/usr/share/meric/"
     install -m 644 meric.conf "$pkgdir/etc/meric.conf"
