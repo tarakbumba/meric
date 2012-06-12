@@ -28,8 +28,7 @@ usermakepkgconf="$HOME/.makepkg.conf"
 userpacmanconf="$HOME/.config/meric/pacman.conf"
 syspacmanconf='/etc/pacman.conf'
 altpacmanconf="$tmpdir/tmppacman.conf"
-# mericconf='/etc/meric.conf'
-mericconf='/home/atilla/DEPOM/GIT/meric/meric.conf'
+mericconf='/etc/meric.conf'
 usermericconf="$HOME/.config/meric/meric.conf"
 mericlang='/usr/share/meric/meric.lang'
 
@@ -160,7 +159,7 @@ err() {
 }
 
 # Source meric.conf
-if [[ -r "$mericconf" ]]; then source "$mericconf"; elif [[ -r "$usermericconf" ]]; then source "$usermericconf"; else err "$ERROR13 $mericconf $OR $usermericconf"; fi
+if [[ -r "$usermericconf" ]]; then source "$usermericconf"; elif [[ -r "$mericconf" ]]; then source "$mericconf"; else err "$ERROR13 $mericconf $OR $usermericconf"; fi
 
 
 RPCURL="https://aur.archlinux.org/rpc.php?type"
