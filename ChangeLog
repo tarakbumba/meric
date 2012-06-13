@@ -1,3 +1,8 @@
+=== meric 1.1.1 ===
+2012-06-12 Atilla ÖNTAŞ <tarakbumba@gmail.com>
+* Bump version: bug fix in meric.lang
+* Updated: string update in meric script
+
 === meric 1.1 ===
 2012-06-12 Atilla ÖNTAŞ <tarakbumba@gmail.com>
 * Added: ability to build packages from local PKGBUILD
