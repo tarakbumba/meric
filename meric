@@ -113,7 +113,7 @@ usage() {
   Q1="should be edit with \$EDITOR?"
   Q2="is in IgnorePkg/IgnoreGroup. Install anyway?"
   Q3="Proceed with installation?"
-  Q4="PKGBUILD should be edit with \$EDITOR?"
+  Q4="PKGBUILD should be edited with \$EDITOR?"
 
   INFO1="is up to date -- reinstalling"
   INFO2="is flagged out of date"
