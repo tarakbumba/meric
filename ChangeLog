@@ -1,3 +1,9 @@
+=== meric 1.1.2 ===
+2012-06-12 Atilla ÖNTAŞ <tarakbumba@gmail.com>
+* Bump version: translation update in meric.lang
+* Updated: string update in meric script
+* Added: Ability to use -a (--auronly switch) with -Sy like -Syua
+
 === meric 1.1.1 ===
 2012-06-12 Atilla ÖNTAŞ <tarakbumba@gmail.com>
 * Bump version: bug fix in meric.lang

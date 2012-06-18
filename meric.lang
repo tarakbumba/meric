@@ -52,13 +52,13 @@ ERROR14="'$package' paketi bulunamadı"
 
 
 YESNO="[E/h]" #TRANSLATORS NOTE: [Y/n] stands for [Yes] and [no]. Please translate excatly as one letter.
-Q1="dosyası \$EDITOR yardımıyla düzenlensin mi?"
+Q1="dosyası '$EDITOR' yardımıyla düzenlensin mi?"
 Q2="IgnorePkg/IgnoreGroup içerisinde. Yine de kurulsun mu?"
 Q3="Kuruluma devam edilsin mi?"
-Q4="PKGBUILD dosyası \$EDITOR yardımıyla düzenlensin mi?"
+Q4="PKGBUILD dosyası '$EDITOR' yardımıyla düzenlensin mi?"
 
 
-INFO1="günce -- yeniden kuruluyor"
+INFO1="güncel -- yeniden kuruluyor"
 INFO2="güncel değil olarak işaretlenmiş"
 INFO3="Aur Hedefleri"
 INFO4="Pacman Hedefleri"
@@ -154,10 +154,10 @@ ERROR13="Required file(s) not found; meric can not continue : "
 ERROR14="package '$package' was not found"
 
 YESNO="[Y/n]" #TRANSLATORS_NOTE: [Y/n] stands for [Yes] and [no]. Please translate excatly as one letter.
-Q1="should be edit with \$EDITOR?"
+Q1="should be edit with '$EDITOR'?"
 Q2="is in IgnorePkg/IgnoreGroup. Install anyway?"
 Q3="Proceed with installation?"
-Q4="PKGBUILD should be edited with \$EDITOR?"
+Q4="PKGBUILD should be edited with '$EDITOR'?"
 
 INFO1="is up to date -- reinstalling"
 INFO2="is flagged out of date"
