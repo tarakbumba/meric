@@ -664,8 +664,8 @@ while [[ $1 ]]; do
     '-Ssq'|'-Sqs') option=search ; quiet='1' ;;
     '-Ssqa'|'-Sqsa'|'-Sasq'|'-Sqas'|'-Saqs'|'-Ssaq') option=search ; quiet='1'; auronly='1' ;;
     '-Si') option=info ;;
-    -S*u*) option=update ; auronly='1' ;;
-    -S*au*|-S*u*a|-Sa*u* ) option=update ; pacmanarg="$1" ;;
+    '-Syu'|'-Syyu'|'-Syuu'|'-Syyuu') option=update ; pacmanarg="$1" ;;
+    -S*au*|-S*u*a|-Sa*u* ) option=update ; auronly='1' ;;
     '-G') option=download ;;
     '-h'|'--help') usage ;;
     '--quiet') quiet='1' ;;
