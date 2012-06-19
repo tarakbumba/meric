@@ -22,7 +22,7 @@ tmpdir="${TMPDIR:-/tmp}/merictmp-$UID"
 rm -rf "$tmpdir" &>/dev/null
 mkdir -p "$tmpdir"
 
-VERSION="1.0"
+VERSION="1.1.3"
 makepkgconf='/etc/makepkg.conf'
 usermakepkgconf="$HOME/.makepkg.conf"
 userpacmanconf="$HOME/.config/meric/pacman.conf"
@@ -151,6 +151,11 @@ usage() {
   CUSTOMIZEPKG="Applying customizepkg instructions..."
   OR="or"
 fi
+
+version_info() {
+echo -en "$COLOR6 Meric - $VERSION $ENDCOLOR \n"
+exit
+}
 
 # Error dialogs must be handle here
 err() {
@@ -679,7 +684,7 @@ while [[ $1 ]]; do
     '--devel') devel='1' ;;
     '--skipinteg') skipinteg='1' ;;
     '--cleandeps'| '-c') cleandeps='1' ;;
-    '--version'| '-v') echo -n "Meric - $VERSION" ;;
+    '--version'| '-v') version_info ;;
     '--skip-repo') skipped_repos="$2" ; skip_repo='1' ; shift ;;
     '--') shift ; packageargs+=("$@") ; break ;;
     -*) echo -e "${COLOR7}$ERROR :$ENDCOLOR $ERROR9" ; exit 5 ;;
