@@ -129,6 +129,7 @@ usage() {
   INFO12="Numbers"
   INFO13="Please wait computing dependencies from repos and AUR ..."
   INFO14="These packages will be installed as dependency from AUR :"
+  INFO15="Installing AUR package ..."
 
   PKGINFO1="Repository"
   PKGINFO2="Name"
@@ -465,6 +466,7 @@ makepkg_options() {
 
 # Installs packages from aur ($1 is package, $2 is dependency or explicit)
 aurinstall() {
+  echo "$INFO15 $1"
   dir="${TMPDIR:-/tmp}/mericbuild-$UID/$1"
 
   # Prepare the installation directory

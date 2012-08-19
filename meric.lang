@@ -72,6 +72,7 @@ INFO11="Kurulacak sayıları girin. Her sayıyı bir boşlukla ayırın."
 INFO12="Sayılar"
 INFO13="Depolardan ve AUR'dan kurulacak bağımlılıklar hesaplanırken lütfen bekleyin ..."
 INFO14="Şu paketler bağımlılık olarak AUR üzerinden kurulacak :"
+INFO15="AUR paketi kuruluyor ..."
 
 
 PKGINFO1="Depo"
@@ -173,6 +174,7 @@ INFO11="Type numbers to install. Separate each number with a space."
 INFO12="Numbers"
 INFO13="Please wait computing dependencies from repos and AUR ..."
 INFO14="These packages will be installed as dependency from AUR :"
+INFO15="Installing AUR package ..."
 
 PKGINFO1="Repository"
 PKGINFO2="Name"
