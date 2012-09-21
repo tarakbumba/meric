@@ -22,7 +22,7 @@ tmpdir="${TMPDIR:-/tmp}/merictmp-$UID"
 rm -rf "$tmpdir" &>/dev/null
 mkdir -p "$tmpdir"
 
-VERSION="1.1.3"
+VERSION="1.1.4"
 makepkgconf='/etc/makepkg.conf'
 usermakepkgconf="$HOME/.makepkg.conf"
 userpacmanconf="$HOME/.config/meric/pacman.conf"
@@ -221,7 +221,7 @@ existsinaur() {
 
 # Tests whether $1 exists in pacman
 existsinpacman() {
-  pacman $conf -Si -- "$1" &>/dev/null
+  pacman $conf -Ssi -- "$1" &>/dev/null
 #   for arc in $(ls -1 "$dbpath/sync"); do
 #     match="$(bsdtar -tf "$dbpath/sync/$arc" | sed -n "/^\($1\(-[^-]\\)\{2\}\)\/$/{s##$dbpath/sync/$arc/\1#;p;};")"
 #     [[ "$match" ]] && return 0
