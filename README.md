@@ -2,7 +2,7 @@ meric
 ======
 
 A package manager utility for pacman repositories and the AUR. meric
-is a fork of famous "meric".  meric only handles tasks that may
+is a fork of famous "packer".  meric only handles tasks that may
 require access to the AUR or are required by tasks that do.
 For everything else, simply use pacman.
 
